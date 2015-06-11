@@ -2,11 +2,27 @@
 
 SELECT DB_NAME() AS DbName 
 , name AS FileName 
-, sum(size)/128.0 AS TotalSizeMB
-, sum(size)/128.0 - CAST(FILEPROPERTY(name, 'SpaceUsed') AS INT)/128.0 AS FreeSpaceMB 
+, SUM(size)/128.0 AS TotalSizeMB
+, SUM(size)/128.0 - CAST(FILEPROPERTY(name, 'SpaceUsed') AS INT)/128.0 AS FreeSpaceMB 
 FROM sys.database_files 
-group by name
+GROUP BY name
 
 
 -- Query a list of tables
 SELECT * FROM [yourDatabase].sys.tables
+
+-- View a list of queries currently running
+
+SELECT
+  S.spid
+, RIGHT(CONVERT(VARCHAR, DATEADD(ms, DATEDIFF(ms, S.last_batch, GETDATE()), '1900-01-01'), 121),  12) as 'batch_duration'
+, S.cmd
+, S.program_name
+, S.status
+, S.hostname
+, S.loginame
+FROM master.dbo.sysprocesses S
+WHERE S.spid > 0
+AND S.status not in ('background', 'sleeping')
+ORDER BY batch_duration DESC
+
