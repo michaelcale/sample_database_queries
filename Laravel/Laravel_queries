@@ -31,7 +31,7 @@ $data = DB::table( 'thisTable AS A' )
     ->groupBy( 'A.thisField', 'B.thatField', 'B.anotherField' )
     ->orderBy( 'B.thatField', 'ASC' )
     ->get(
-        array( 'A.thisField', 'B.thatField', 'B.anotherField', DB::raw() )
+        array( 'A.thisField', 'B.thatField', 'B.anotherField', DB::raw('sum(thisValue) AS thisName') )
     );
     
     
