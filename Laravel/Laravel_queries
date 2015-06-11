@@ -1,0 +1,37 @@
+// aggregate data with multiple joined tables
+
+$data = DB::table( 'table_a AS A' )
+    ->join( 'table_b AS B', 'B.id', '=', 'A.id' )
+    ->join( 'table_c AS C', 'A.field', '=', 'C.field' )
+    ->groupBy( 'A.thisField' , 'B.thatField', 'C.theotherField' )
+    ->orderBy( 'A.thisField', 'ASC' )
+    ->orderBy( 'B.thatField', 'ASC' )
+    ->orderBy( 'C.theotherField', 'ASC' )    
+    ->get(
+        array( 'A.thisfield', 'B.thatfield', 'C.theotherfield', DB::raw('SUM(thisnumber) AS this'), DB::raw('SUM(thatnumber) AS that') )
+    );
+    
+    
+    
+// aggregate from a single table
+
+$data = DB::table('thisTable')
+    ->select( DB::raw( 'thisField, thatField, sum(this) as thisSum' ) )
+    ->where( 'thisField', '>=', '$thisVariable' )
+    ->groupBy( 'thisField', 'thatField' )
+    ->get();
+    
+    
+    
+// aggregate with joined teble
+
+$data = DB::table( 'thisTable AS A' )
+    ->join( 'thatTable AS B', 'A.id', '=', 'B.id' )
+    ->where( 'thisField', '=', $thisVariable )
+    ->groupBy( 'A.thisField', 'B.thatField', 'B.anotherField' )
+    ->orderBy( 'B.thatField', 'ASC' )
+    ->get(
+        array( 'A.thisField', 'B.thatField', 'B.anotherField', DB::raw() )
+    );
+    
+    
